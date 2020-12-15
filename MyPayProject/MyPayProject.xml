@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MyPayProject</name>
+    </assembly>
+    <members>
+        <member name="T:MyPayProject.CsvImporter">
+            <summary>
+            Class with methods to import data from a csv file
+            </summary>
+        </member>
+        <member name="M:MyPayProject.CsvImporter.AddOrUpdateHours(System.Collections.Generic.Dictionary{System.Int32,System.Collections.Generic.List{System.Double}},System.Int32,System.Double)">
+            <summary>
+            Method will check if there is a dictionary entry
+            If not, will create a new entry and store data
+            If there isand entry, it will find the entry and update its array
+            </summary>
+            <param name="shifts"></param>
+            <param name="id"></param>
+            <param name="hours"></param>
+        </member>
+        <member name="M:MyPayProject.CsvImporter.AddOrUpdateRates(System.Collections.Generic.Dictionary{System.Int32,System.Collections.Generic.List{System.Double}},System.Int32,System.Double)">
+            <summary>
+            Method will check if there is a dictionary entry
+            If not, will create a new entry and store data
+            If there isand entry, it will find the entry and update its array
+            </summary>
+            <param name="rates"></param>
+            <param name="id"></param>
+            <param name="rate"></param>
+        </member>
+        <member name="M:MyPayProject.CsvImporter.CreatePayRecord(System.Int32,System.Double[],System.Double[],System.String,System.String)">
+            <summary>
+            Method that creates and returns the appropriate PayRecord 
+            </summary>
+            <param name="id"></param>
+            <param name="hours"></param>
+            <param name="rates"></param>
+            <param name="visa"></param>
+            <param name="yearToDate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MyPayProject.CsvImporter.ImportPayRecords(System.String)">
+            <summary>
+            Method that imports records from a csv file
+            </summary>
+            <param name="file"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MyPayProject.PayRecord">
+            <summary>
+            Abstract class to be inherited from with fields properties and a method
+            </summary>
+        </member>
+        <member name="F:MyPayProject.PayRecord._hours">
+            <summary>
+            Array with hours values
+            </summary>
+        </member>
+        <member name="F:MyPayProject.PayRecord._rates">
+            <summary>
+            Array with rates values
+            </summary>
+        </member>
+        <member name="P:MyPayProject.PayRecord.Id">
+            <summary>
+            Employee Id
+            </summary>
+        </member>
+        <member name="P:MyPayProject.PayRecord.Gross">
+            <summary>
+            Gross value property calculated by multilying the hours by the rate
+            </summary>
+        </member>
+        <member name="P:MyPayProject.PayRecord.Tax">
+            <summary>
+            Abstract property to be inherited from for calculating tax
+            </summary>
+        </member>
+        <member name="P:MyPayProject.PayRecord.Net">
+            <summary>
+            Net value property calculated by subtracting Tax from Gross
+            </summary>
+        </member>
+        <member name="M:MyPayProject.PayRecord.#ctor(System.Int32,System.Double[],System.Double[])">
+            <summary>
+            Constructor for the PayRecord class
+            </summary>
+            <param name="id"></param>
+            <param name="hours"></param>
+            <param name="rates"></param>
+        </member>
+        <member name="M:MyPayProject.PayRecord.GetDetails">
+            <summary>
+            Method that prints details of a record
+            </summary>
+            <returns>Id,Gross,Tax and Net</returns>
+        </member>
+        <member name="T:MyPayProject.PayRecordWriter">
+            <summary>
+            Class with Method to write to a csv file using CsvHelper
+            </summary>
+        </member>
+        <member name="M:MyPayProject.PayRecordWriter.Write(System.String,System.Collections.Generic.List{MyPayProject.PayRecord},System.Boolean)">
+            <summary>
+            Method that creates a csv file and prints the imported data to that csv file and optionally print the results to the console
+            </summary>
+            <param name="file"></param>
+            <param name="records"></param>
+            <param name="writeToConsole"></param>
+        </member>
+        <member name="T:MyPayProject.ResidentPayRecord">
+             <summary>
+            Class that inherits from PayRecord
+             </summary>
+        </member>
+        <member name="M:MyPayProject.ResidentPayRecord.#ctor(System.Int32,System.Double[],System.Double[])">
+            <summary>
+            Constructor for the ResidentPayRecord class
+            </summary>
+            <param name="id"></param>
+            <param name="hours"></param>
+            <param name="rates"></param>
+        </member>
+        <member name="P:MyPayProject.ResidentPayRecord.Tax">
+            <summary>
+            Override the Tax property to calclate the appropriate tax amount
+            </summary>
+        </member>
+        <member name="T:MyPayProject.TaxCalculator">
+            <summary>
+            Class with methods to calculate tax
+            </summary>
+        </member>
+        <member name="M:MyPayProject.TaxCalculator.CalculateResidentialTax(System.Double)">
+            <summary>
+            Checks the gross value and assigns the appropriate coefficient values,
+            Calculates residential tax by multiplying coefficient value A by gross and subtracting coefficient value B from it.
+            </summary>
+            <param name="gross"></param>
+            <returns>The tax amount</returns>
+        </member>
+        <member name="M:MyPayProject.TaxCalculator.CalculateWorkingHolidayTax(System.Double,System.Double)">
+            <summary>
+            Checks the totalGross by adding yearToDate to gross, Checks in what range is totalGross and assigns the appropriate rate value.
+            calculates tax by multiplying tax by rate.
+            </summary>
+            <param name="gross"></param>
+            <param name="yearToDate"></param>
+            <returns>The tax amount</returns>
+        </member>
+        <member name="T:MyPayProject.WorkingHolidayPayRecord">
+            <summary>
+            Class that inherits from PayRecord
+            </summary>
+        </member>
+        <member name="P:MyPayProject.WorkingHolidayPayRecord.Visa">
+            <summary>
+            Property that stores the visa input
+            </summary>
+        </member>
+        <member name="P:MyPayProject.WorkingHolidayPayRecord.YearToDate">
+            <summary>
+            Property that stores the Year to Date input
+            </summary>
+        </member>
+        <member name="M:MyPayProject.WorkingHolidayPayRecord.#ctor(System.Int32,System.Double[],System.Double[],System.Int32,System.Int32)">
+            <summary>
+            Constructor for the WorkingHoliday class
+            </summary>
+            <param name="id"></param>
+            <param name="hours"></param>
+            <param name="rates"></param>
+            <param name="visa"></param>
+            <param name="yearToDate"></param>
+        </member>
+        <member name="M:MyPayProject.WorkingHolidayPayRecord.GetDetails">
+            <summary>
+            Override the GetDetails method so it behaves differently and displays the appropriate values
+            </summary>
+            <returns> Id,Gross,Net,Tax,Visa and YearToDate</returns>
+        </member>
+        <member name="P:MyPayProject.WorkingHolidayPayRecord.Tax">
+            <summary>
+            Override the Tax property to calclate the appropriate tax amount
+            </summary>
+        </member>
+    </members>
+</doc>
